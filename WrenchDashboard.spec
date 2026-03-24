@@ -22,8 +22,10 @@ a = Analysis(
     pathex=[],
     binaries=[],
     datas=[
-        ('realtime_wrench_bokeh.py', '.'),
-    ] + bokeh_data[0] + tornado_data[0] + jinja2_data[0] + logo_files,
+    ('realtime_wrench_bokeh.py', '.'),
+    ('realtime_wrench/static', 'static'),
+    ('DRHR Logo_withoutbg.jpg', '.'),   # root file
+    ]+ bokeh_data[0] + tornado_data[0] + jinja2_data[0] + logo_files,
     
     hiddenimports=[
         'bokeh.server.server',

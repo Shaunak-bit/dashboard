@@ -7,6 +7,7 @@ import csv
 import os
 import base64
 import pathlib
+import sys
 
 from bokeh.models import (
     ColumnDataSource, HoverTool, Button, Div, Span,
@@ -189,7 +190,10 @@ data_lock   = threading.Lock()
 # =====================================================
 # LOGO CONFIGURATION
 # =====================================================
-script_dir = pathlib.Path(__file__).parent
+if getattr(sys, 'frozen', False):
+    script_dir = pathlib.Path(sys._MEIPASS)
+else:
+    script_dir = pathlib.Path(__file__).parent
 logo_file  = None
 for ext in ("png", "jpg", "jpeg", "gif", "svg"):
     matches = list(script_dir.rglob(f"*Bhabha_Atomic_Research_Centre_Logo*.{ext}"))
@@ -197,8 +201,8 @@ for ext in ("png", "jpg", "jpeg", "gif", "svg"):
         logo_file = matches[0]
         break
 if logo_file is None:
-    imgs      = list(script_dir.rglob("static/*.*"))
-    logo_file = imgs[0] if imgs else None
+   imgs = list(script_dir.rglob("static/*Bhabha*"))
+   logo_file = imgs[0] if imgs else None
 
 if logo_file and logo_file.exists():
     raw  = logo_file.read_bytes()
