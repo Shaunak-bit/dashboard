@@ -13,10 +13,10 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.9'  # Using 3.9 for better PyInstaller compatibility
     
@@ -31,14 +31,14 @@ jobs:
         pyinstaller --clean --noconfirm WrenchDashboard.spec
     
     - name: Upload executable
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: WrenchDashboard-Windows
         path: dist/WrenchDashboard.exe
         retention-days: 30
     
     - name: Upload full dist folder
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: WrenchDashboard-Windows-Full
         path: dist/
@@ -49,10 +49,10 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.9'
     
@@ -70,7 +70,7 @@ jobs:
       run: chmod +x dist/WrenchDashboard
     
     - name: Upload executable
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: WrenchDashboard-Linux
         path: dist/WrenchDashboard
