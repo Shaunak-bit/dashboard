@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+venv_dashboard/
+venv_*/
+ENV/
+env/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# PyInstaller
+*.spec.bak
+*.manifest
+*.spec~
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Project specific
+recordings/
+*.csv
+*.log
+
+# Build artifacts (will be created by GitHub Actions)
+dist/
+build/
+*.exe
+*.app
+*.dmg
+
+# Local config
+.env
+config.local.*

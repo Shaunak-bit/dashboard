@@ -1,0 +1,68 @@
+name: Create Release with Executable
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Triggers on version tags like v1.0.0, v2.1.3, etc.
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+    
+    - name: Build executable
+      run: |
+        pyinstaller --clean --noconfirm WrenchDashboard.spec
+    
+    - name: Create ZIP of distribution
+      run: |
+        cd dist
+        Compress-Archive -Path * -DestinationPath ../WrenchDashboard-Windows.zip
+    
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: WrenchDashboard-Windows.zip
+        body: |
+          ## Visual Wrench Dashboard ${{ github.ref_name }}
+          
+          ### Installation
+          1. Download `WrenchDashboard-Windows.zip`
+          2. Extract the ZIP file
+          3. Run `WrenchDashboard.exe`
+          
+          ### What's Included
+          - Standalone executable (no Python required)
+          - All dependencies bundled
+          - Runs on Windows 10/11
+          
+          ### Requirements
+          - Windows 10 or later
+          - Port 5006 available
+          - ~200MB disk space
+          
+          ### Quick Start
+          1. Double-click `WrenchDashboard.exe`
+          2. Browser opens automatically to http://localhost:5006
+          3. Connect your C++ client to port 5001
+          
+          ---
+          **Developed by Division of Remote Handling & Robotics**
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
