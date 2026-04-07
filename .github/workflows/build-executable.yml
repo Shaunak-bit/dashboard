@@ -26,7 +26,15 @@ jobs:
     
     - name: Build executable
       run: |
-        pyinstaller dashboard_launcher.py --onedir --name WrenchDashboard --clean --collect-all bokeh --collect-all tornado --collect-all jinja2
+        pyinstaller dashboard_launcher.py `
+        --onedir `
+        --name WrenchDashboard `
+        --clean `
+        --collect-all bokeh `
+        --collect-all tornado `
+        --collect-all jinja2 `
+        --add-data "realtime_wrench_bokeh.py;." `
+        --add-data "realtime_wrench;realtime_wrench"
     
     - name: Upload Build
       uses: actions/upload-artifact@v4
