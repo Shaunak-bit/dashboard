@@ -28,9 +28,9 @@ jobs:
       run: |
         pyinstaller --clean --noconfirm WrenchDashboard.spec
     
-    - name: Upload Windows Build
+    - name: Upload Build
       uses: actions/upload-artifact@v4
       with:
-        name: WrenchDashboard-Windows
+        name: WrenchDashboard
         path: dist/WrenchDashboard/
         retention-days: 30
