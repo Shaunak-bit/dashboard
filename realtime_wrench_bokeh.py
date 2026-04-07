@@ -401,6 +401,11 @@ def set_threshold_value():
             force_fig.y_range.end        = FORCE_THRESHOLD * 1.5
             threshold_current_label.text = (
                 f"🔴 Current Threshold: <b>{FORCE_THRESHOLD:.1f} N</b>")
+            # Update explicit line end to maintain full width visual
+            threshold_line_source.data = dict(
+                x=[force_fig.x_range.start, force_fig.x_range.end],
+                y=[FORCE_THRESHOLD, FORCE_THRESHOLD]
+            )
             print(f"✅ Force threshold set to {FORCE_THRESHOLD} N")
         else:
             threshold_input.value = str(FORCE_THRESHOLD)
@@ -552,12 +557,15 @@ force_fig = figure(
 )
 force_fig.y_range.start = 0
 force_fig.y_range.end   = FORCE_THRESHOLD * 1.5
-force_fig.min_border = 0;  force_fig.min_border_left = LEFT_MARGIN
+force_fig.min_border = 0;  force_fig.min_border_left = 0
 force_fig.min_border_right = 0;  force_fig.min_border_top = 0
 force_fig.min_border_bottom = 0
 force_fig.toolbar.autohide = True
 force_fig.x_range.follow = "end";  force_fig.x_range.follow_interval = 200
 style_axes(force_fig)
+
+# Explicitly remove x-range padding for threshold alignment and overflow to hide any pixel gap
+force_fig.x_range.range_padding = -0.01
 
 # Main force line
 force_fig.line('t', 'fmag', source=force_mag_source,
@@ -579,6 +587,14 @@ threshold_span = Span(
     line_color="#DC2626", line_dash="dashed", line_width=2
 )
 force_fig.add_layout(threshold_span)
+
+# Fallback explicit threshold line to guarantee flush left/right edges
+threshold_line_source = ColumnDataSource(data=dict(
+    x=[force_fig.x_range.start or 0, force_fig.x_range.end or 0],
+    y=[FORCE_THRESHOLD, FORCE_THRESHOLD]
+))
+force_fig.line('x', 'y', source=threshold_line_source,
+               line_color="#DC2626", line_dash="dashed", line_width=2)
 
 # Dummy invisible segment just so "Threshold" appears
 # in the legend with a red dashed style
@@ -652,6 +668,8 @@ def update():
             update_time_axis_format(fig, in_minutes=True)  # ADDED
         force_fig.xaxis.axis_label = get_time_label()
         update_time_axis_format(force_fig, in_minutes=True)  # ADDED
+        # Force no edge padding so threshold line remains flush
+        force_fig.x_range.range_padding = 0
         print(f"✅ Time axis switched to minutes at counter={counter}")
 
     # Alarm — alarm_div is in the RIGHT status column
@@ -707,6 +725,18 @@ def update():
 
     # Get the display time (either in seconds or minutes)
     display_time = get_display_time(counter)
+
+    # Keep explicit threshold line in sync with x-axis window (overflow one step to avoid left gap)
+    try:
+        start = force_fig.x_range.start or 0
+        end = force_fig.x_range.end or (start + 1)
+        padding = (end - start) * 0.02
+        threshold_line_source.data = dict(
+            x=[start - padding, end + padding],
+            y=[FORCE_THRESHOLD, FORCE_THRESHOLD]
+        )
+    except Exception:
+        pass
 
     # ═══════════════════════════════════════════════════════════════
     # MEMORY MONITORING - Safety net to catch rollover failures
