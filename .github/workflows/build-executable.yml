@@ -26,7 +26,7 @@ jobs:
     
     - name: Build executable
       run: |
-        pyinstaller --clean --noconfirm WrenchDashboard.spec
+        pyinstaller dashboard_launcher.py --onedir --name WrenchDashboard --clean --collect-all bokeh --collect-all tornado --collect-all jinja2
     
     - name: Upload Build
       uses: actions/upload-artifact@v4
